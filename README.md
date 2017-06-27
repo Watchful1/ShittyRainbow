@@ -1,0 +1,1 @@
+This is a bot for the /r/shittyrainbow6 subreddit
