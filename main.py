@@ -87,12 +87,13 @@ def getSidebar(sub):
 
 
 checkedIDs = {}
-for postStr in open('ids.txt', 'r').read().split('\n'):
-	postStrs = postStr.split("|")
-	if len(postStrs) == 2:
-		checkedIDs[postStrs[0]] = datetime.strptime(postStrs[1], "%Y-%m-%d %H:%M:%S")
+if os.path.isfile(SAVE_FILE_NAME):
+	for postStr in open(SAVE_FILE_NAME, 'r').read().split('\n'):
+		postStrs = postStr.split("|")
+		if len(postStrs) == 2:
+			checkedIDs[postStrs[0]] = datetime.strptime(postStrs[1], "%Y-%m-%d %H:%M:%S")
 
-log.info("Loaded posts: "+str(len(checkedIDs)))
+	log.info("Loaded posts: "+str(len(checkedIDs)))
 
 sub = r.subreddit(SUBREDDIT)
 begin, leaderboard = getSidebar(sub)
@@ -115,26 +116,30 @@ while True:
 					else:
 						points = 1
 				log.info("Setting flair for /u/"+str(post.author)+" to "+str(points))
-				#sub.flair.set(post.author, "Points: "+str(points))
+				sub.flair.set(post.author, "Points: "+str(points))
 				checkedIDs[post.id] = datetime.utcfromtimestamp(post.created_utc)
 
 				if points > leaderboardMin:
-					begin, leaderboard = getSidebar(sub)
+					begin, blank = getSidebar(sub)
 					newLeaderboard = []
 					oldLeader = None
 					updated = False
+					noUpdate = False
 					for leader in leaderboard:
 						if points == leader['points'] and str(post.author) == leader['user']:
 							newLeaderboard = leaderboard
+							noUpdate = True
 							break
 						elif points > leader['points']:
 							if str(post.author) == leader['user']:
+								log.debug("Updating /u/"+leader['user']+" from "+str(leader['points'])+" to "+str(points))
 								leader['points'] = points
 								newLeaderboard.append(leader)
 								updated = True
 							elif updated:
 								newLeaderboard.append(leader)
 							elif oldLeader is None:
+								log.debug("Adding /u/"+str(post.author)+" at "+str(points))
 								newLeaderboard.append({'user': str(post.author), 'points': points})
 								oldLeader = leader
 							else:
@@ -154,8 +159,12 @@ while True:
 						output.append(leader['user'])
 						output.append(" | ")
 						output.append(str(leader['points']))
+						output.append("\n")
 
-					sub.mod.update(description=''.join(output))
+					if not noUpdate:
+						log.debug("Updating sidebar")
+						#log.debug(''.join(output))
+						sub.mod.update(description=''.join(output))
 
 
 		fh = open(SAVE_FILE_NAME, 'w')
