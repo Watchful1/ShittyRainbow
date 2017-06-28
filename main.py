@@ -116,7 +116,8 @@ while True:
 					else:
 						points = 1
 				log.info("Setting flair for /u/"+str(post.author)+" to "+str(points))
-				sub.flair.set(post.author, "Points: "+str(points))
+				if not debug:
+					sub.flair.set(post.author, "Points: "+str(points))
 				checkedIDs[post.id] = datetime.utcfromtimestamp(post.created_utc)
 
 				if points > leaderboardMin:
@@ -164,7 +165,8 @@ while True:
 					if not noUpdate:
 						log.debug("Updating sidebar")
 						#log.debug(''.join(output))
-						sub.mod.update(description=''.join(output))
+						if not debug:
+							sub.mod.update(description=''.join(output))
 
 
 		fh = open(SAVE_FILE_NAME, 'w')
