@@ -117,7 +117,7 @@ while True:
 						points = 1
 				log.info("Setting flair for /u/"+str(post.author)+" to "+str(points))
 				if not debug:
-					sub.flair.set(post.author, "Points: "+str(points))
+					sub.flair.set(post.author, "Points: "+str(points), css_class='memer')
 				checkedIDs[post.id] = datetime.utcfromtimestamp(post.created_utc)
 
 				if points > leaderboardMin:
