@@ -104,7 +104,7 @@ while True:
 	log.debug("Starting run")
 
 	try:
-		for post in sub.new(limit=100):
+		for post in sub.new(limit=25):
 			if post.score >= 80 and post.id not in checkedIDs:
 				if str(post.author_flair_text) == "None":
 					points = 1
@@ -115,7 +115,7 @@ while True:
 						points = int(pointsStr[0]) + 1
 					else:
 						points = 1
-				log.info("Setting flair for /u/"+str(post.author)+" to "+str(points))
+				log.info("Setting flair for /u/"+str(post.author)+" to "+str(points)+" with post "+post.id)
 				if not debug:
 					sub.flair.set(post.author, "Points: "+str(points), css_class='memer')
 				checkedIDs[post.id] = datetime.utcfromtimestamp(post.created_utc)
