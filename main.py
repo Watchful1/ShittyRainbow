@@ -83,6 +83,9 @@ def getSidebar(sub):
 		if len(userPoint) == 2 and userPoint[1].isdigit():
 			leaderboard.append({'user': userPoint[0], 'points': int(userPoint[1])})
 
+	if len(leaderboard) == 0:
+		log.error("Could not parse leaderboard, length 0")
+
 	return begin, leaderboard
 
 
