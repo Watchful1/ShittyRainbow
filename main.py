@@ -76,7 +76,7 @@ def getSidebar(sub):
 	description = sub.description
 	begin = description[0:description.find("#Leaderboards")]
 	leaderboardStr = description[description.find("#Leaderboards"):]
-	userPoints = re.findall('(?:/u/)(.+)', leaderboardStr)
+	userPoints = re.findall('(?:/u/)(.+?)(?:\r\n)', leaderboardStr)
 	leaderboard = []
 	for userPointStr in userPoints:
 		userPoint = userPointStr.split(" | ")
