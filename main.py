@@ -142,18 +142,18 @@ while True:
 								updated = True
 							elif updated:
 								newLeaderboard.append(leader)
-								log.debug("Appending old leader in same place: "+leader['user']+" "+leader['points'])
+								log.debug("Appending old leader in same place: "+leader['user']+" "+str(leader['points']))
 							elif oldLeader is None:
 								log.debug("Adding /u/"+str(post.author)+" at "+str(points))
 								newLeaderboard.append({'user': str(post.author), 'points': points})
 								oldLeader = leader
 							else:
 								newLeaderboard.append(oldLeader)
-								log.debug("Appending old leader in new place: "+leader['user']+" "+leader['points'])
+								log.debug("Appending old leader in new place: "+leader['user']+" "+str(leader['points']))
 								oldLeader = leader
 						else:
 							newLeaderboard.append(leader)
-							log.debug("Appending old leader in same place: "+leader['user']+" "+leader['points'])
+							log.debug("Appending old leader in same place: "+leader['user']+" "+str(leader['points']))
 
 					leaderboard = newLeaderboard
 					leaderboardMin = leaderboard[len(leaderboard) - 1]['points']
