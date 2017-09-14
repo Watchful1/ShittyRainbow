@@ -135,7 +135,7 @@ while True:
 							noUpdate = True
 							break
 						elif points > leader['points']:
-							if str(post.author) == leader['user']:
+							if str(post.author) == leader['user'] and oldLeader is None:
 								log.debug("Updating /u/"+leader['user']+" from "+str(leader['points'])+" to "+str(points))
 								leader['points'] = points
 								newLeaderboard.append(leader)
