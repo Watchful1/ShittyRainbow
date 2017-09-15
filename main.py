@@ -149,7 +149,7 @@ while True:
 								oldLeader = leader
 							else:
 								newLeaderboard.append(oldLeader)
-								log.debug("Appending old leader in new place: "+leader['user']+" "+str(leader['points']))
+								log.debug("Appending old leader in new place: "+oldLeader['user']+" "+str(oldLeader['points']))
 								oldLeader = leader
 						else:
 							newLeaderboard.append(leader)
