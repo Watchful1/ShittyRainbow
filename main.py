@@ -72,6 +72,7 @@ except configparser.NoSectionError:
 	log.error("User "+user+" not in praw.ini, aborting")
 	sys.exit(0)
 
+
 def getSidebar(sub):
 	description = sub.description
 	begin = description[0:description.find("#Leaderboards")]
@@ -125,54 +126,35 @@ while True:
 
 				if points > leaderboardMin:
 					begin, blank = getSidebar(sub)
-					newLeaderboard = []
-					oldLeader = None
-					updated = False
-					noUpdate = False
-					for leader in leaderboard:
-						if points == leader['points'] and str(post.author) == leader['user']:
-							newLeaderboard = leaderboard
-							noUpdate = True
-							break
-						elif points > leader['points']:
-							if str(post.author) == leader['user'] and oldLeader is None:
-								log.debug("Updating /u/"+leader['user']+" from "+str(leader['points'])+" to "+str(points))
-								leader['points'] = points
-								newLeaderboard.append(leader)
-								updated = True
-							elif updated:
-								newLeaderboard.append(leader)
-								log.debug("Appending old leader in same place: "+leader['user']+" "+str(leader['points']))
-							elif oldLeader is None:
-								log.debug("Adding /u/"+str(post.author)+" at "+str(points))
-								newLeaderboard.append({'user': str(post.author), 'points': points})
-								oldLeader = leader
-							else:
-								newLeaderboard.append(oldLeader)
-								log.debug("Appending old leader in new place: "+oldLeader['user']+" "+str(oldLeader['points']))
-								oldLeader = leader
-						else:
-							newLeaderboard.append(leader)
-							log.debug("Appending old leader in same place: "+leader['user']+" "+str(leader['points']))
 
-					leaderboard = newLeaderboard
+					leaderboard.append({'user': str(post.author), 'points': points})
+
+					leaders = set()
+					for i,leader in enumerate(leaderboard):
+						if leader['user'] in leaders:
+							leaderboard.pop(i)
+						else:
+							leaders.add(leader['user'])
+
+					leaderboard = sorted(leaderboard, key=lambda leader: leader['points'])
 					leaderboardMin = leaderboard[len(leaderboard) - 1]['points']
 
 					output = [begin]
 					output.append("#Leaderboards [[?]](https://www.reddit.com/r/shittyrainbow6/comments/6i4ylr/css_update_meme_points_bot/)\n\n")
 					output.append("User | Score\n---|---\n")
-					for leader in leaderboard:
+					for leader in leaderboard[4::-1]:
 						output.append("/u/")
 						output.append(leader['user'])
 						output.append(" | ")
 						output.append(str(leader['points']))
 						output.append("\n")
 
-					if not noUpdate:
-						log.debug("Updating sidebar")
-						#log.debug(''.join(output))
-						if not debug:
-							sub.mod.update(description=''.join(output))
+					#if not noUpdate:
+					log.debug("Updating sidebar")
+					if debug:
+						log.debug(''.join(output))
+					else:
+						sub.mod.update(description=''.join(output))
 
 
 		fh = open(SAVE_FILE_NAME, 'w')
