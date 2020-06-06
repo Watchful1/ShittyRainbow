@@ -21,7 +21,7 @@ LOOP_TIME = 15*60
 SAVE_FILE_NAME = "ids.txt"
 
 ### Logging setup ###
-LOG_LEVEL = logging.DEBUG
+LOG_LEVEL = logging.INFO
 if not os.path.exists(LOG_FOLDER_NAME):
 	os.makedirs(LOG_FOLDER_NAME)
 LOG_FILENAME = LOG_FOLDER_NAME+"/"+"bot.log"
@@ -47,7 +47,7 @@ def signal_handler(signal, frame):
 
 signal.signal(signal.SIGINT, signal_handler)
 
-log.debug("Connecting to reddit")
+log.info("Connecting to reddit")
 
 once = False
 debug = False
